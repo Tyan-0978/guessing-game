@@ -9,6 +9,16 @@ function App() {
   const [status, setStatus] = useState('')
   const [attempt, setAttempt] = useState(0);
 
+  const handleGuess = async () => {
+    const message = await guess(number);
+    if (message === "correct") {
+      setHasWon(true);
+    } else {
+      setStatus(message);
+      setAttempt(attempt + 1);
+    }
+  };
+
   const startMenu = (
     <div>
       <button
@@ -52,19 +62,14 @@ function App() {
           <input
             value={number}
             onChange={(e) => setNumber(e.target.value)}
+	    onKeyUp={ (e) => {
+	      if (e.keyCode === 13 && number) {
+	        handleGuess();
+	      }
+	    }}
           ></input>
           <button
-            // TODO: use async/await to call guess(number),
-            // process the response to set the proper state values
-            onClick={ async () => {
-              const message = await guess(number);
-              if (message === "correct") {
-                setHasWon(true);
-              } else {
-                setStatus(message);
-                setAttempt(attempt + 1);
-              }
-            }}
+            onClick={ handleGuess }
             disabled={!number}
           >
             guess!
